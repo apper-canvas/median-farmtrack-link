@@ -22,10 +22,13 @@ const Tasks = () => {
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [filterStatus, setFilterStatus] = useState("All");
-
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [templates, setTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [templatesLoading, setTemplatesLoading] = useState(false);
   useEffect(() => {
     if (selectedFarmId) {
       loadData();
@@ -61,7 +64,28 @@ const Tasks = () => {
     }
   };
 
-  const handleAdd = () => {
+const handleAdd = () => {
+    setSelectedTask(null);
+    setSelectedTemplate(null);
+    setIsModalOpen(true);
+  };
+
+  const handleUseTemplate = async () => {
+    setTemplatesLoading(true);
+    try {
+      const templateData = await taskService.getTemplates();
+      setTemplates(templateData);
+      setIsTemplateModalOpen(true);
+    } catch (error) {
+      toast.error('Failed to load templates');
+    } finally {
+      setTemplatesLoading(false);
+    }
+  };
+
+  const handleSelectTemplate = (template) => {
+    setSelectedTemplate(template);
+    setIsTemplateModalOpen(false);
     setSelectedTask(null);
     setIsModalOpen(true);
   };
@@ -138,12 +162,18 @@ const Tasks = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Tasks</h1>
-        <Button onClick={handleAdd}>
-          <ApperIcon name="Plus" size={20} />
-          Add Task
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleUseTemplate} disabled={templatesLoading}>
+            <ApperIcon name="FileTemplate" size={20} />
+            {templatesLoading ? "Loading..." : "Use Template"}
+          </Button>
+          <Button onClick={handleAdd}>
+            <ApperIcon name="Plus" size={20} />
+            Add Task
+          </Button>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -251,10 +281,69 @@ const Tasks = () => {
         </div>
       )}
 
+{/* Template Selection Modal */}
+      <Modal
+        isOpen={isTemplateModalOpen}
+        onClose={() => setIsTemplateModalOpen(false)}
+        title="Choose Task Template"
+      >
+        <div className="space-y-6">
+          <p className="text-gray-600">Select a pre-defined template for common farm activities:</p>
+          
+          {templates.reduce((acc, template) => {
+            if (!acc[template.category]) {
+              acc[template.category] = [];
+            }
+            acc[template.category].push(template);
+            return acc;
+          }, {}) && Object.entries(templates.reduce((acc, template) => {
+            if (!acc[template.category]) {
+              acc[template.category] = [];
+            }
+            acc[template.category].push(template);
+            return acc;
+          }, {})).map(([category, categoryTemplates]) => (
+            <div key={category} className="space-y-3">
+              <h3 className="font-semibold text-lg text-gray-800 border-b border-gray-200 pb-1">
+                {category}
+              </h3>
+              <div className="grid grid-cols-1 gap-2">
+                {categoryTemplates.map((template) => (
+                  <button
+                    key={template.Id}
+                    onClick={() => handleSelectTemplate(template)}
+                    className="p-4 text-left border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <ApperIcon name={template.icon} size={20} className="text-primary flex-shrink-0" />
+                        <div className="min-w-0">
+                          <div className="font-medium text-gray-900">{template.title}</div>
+                          <div className="text-sm text-gray-600 mt-1 line-clamp-2">{template.description}</div>
+                          <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                            <span>Priority: {template.priority}</span>
+                            <span>Duration: {template.estimatedDuration}</span>
+                            <span>Frequency: {template.frequency}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Badge variant={template.priority === 'High' ? 'error' : template.priority === 'Medium' ? 'warning' : 'success'} size="sm">
+                        {template.priority}
+                      </Badge>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Modal>
+
+      {/* Task Form Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={selectedTask ? "Edit Task" : "Add New Task"}
+title={selectedTask ? "Edit Task" : selectedTemplate ? `Create Task from Template: ${selectedTemplate.title}` : "Add New Task"}
       >
         <TaskForm
           farmId={selectedFarmId}
