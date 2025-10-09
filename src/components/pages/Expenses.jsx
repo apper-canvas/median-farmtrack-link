@@ -9,22 +9,23 @@ import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
 import Modal from "@/components/molecules/Modal";
 import ExpenseForm from "@/components/organisms/ExpenseForm";
+import BudgetForm from "@/components/organisms/BudgetForm";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import expenseService from "@/services/api/expenseService";
-
 const Expenses = () => {
   const { selectedFarmId } = useOutletContext();
   
-  const [expenses, setExpenses] = useState([]);
+const [expenses, setExpenses] = useState([]);
   const [filteredExpenses, setFilteredExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [filterCategory, setFilterCategory] = useState("All");
-
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [budgets, setBudgets] = useState([]);
   useEffect(() => {
     if (selectedFarmId) {
       loadExpenses();
@@ -41,13 +42,26 @@ const Expenses = () => {
     }
   }, [expenses, filterCategory]);
 
-  const loadExpenses = async () => {
+const loadExpenses = async () => {
     setLoading(true);
     setError("");
 
     try {
       const data = await expenseService.getByFarmId(selectedFarmId);
       setExpenses(data);
+      
+      // Load budgets and check for alerts
+      const budgetData = await expenseService.getBudgetsByFarm(selectedFarmId);
+      setBudgets(budgetData);
+      
+      const alerts = await expenseService.checkBudgetAlerts(selectedFarmId);
+      alerts.forEach(alert => {
+        if (alert.type === 'exceeded') {
+          toast.error(alert.message);
+        } else if (alert.type === 'warning') {
+          toast.warning(alert.message);
+        }
+      });
     } catch (error) {
       setError("Failed to load expenses");
       console.error(error);
@@ -79,8 +93,13 @@ const Expenses = () => {
     }
   };
 
-  const handleSuccess = () => {
+const handleSuccess = () => {
     setIsModalOpen(false);
+    loadExpenses();
+  };
+
+  const handleBudgetSuccess = () => {
+    setIsBudgetModalOpen(false);
     loadExpenses();
   };
 
@@ -97,10 +116,26 @@ const Expenses = () => {
     );
   }
 
-  const categoryTotals = expenses.reduce((acc, expense) => {
+const categoryTotals = expenses.reduce((acc, expense) => {
     acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
     return acc;
   }, {});
+
+  const getBudgetForCategory = (category) => {
+    return budgets.find(budget => budget.category === category);
+  };
+
+  const getBudgetProgress = (category, spent) => {
+    const budget = getBudgetForCategory(category);
+    if (!budget) return null;
+    
+    const percentage = Math.min((spent / budget.budgetAmount) * 100, 100);
+    return {
+      percentage,
+      budget: budget.budgetAmount,
+      isOverBudget: spent > budget.budgetAmount
+    };
+  };
 
   const chartOptions = {
     chart: {
@@ -153,10 +188,16 @@ const Expenses = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Expenses</h1>
-        <Button onClick={handleAdd}>
-          <ApperIcon name="Plus" size={20} />
-          Add Expense
-        </Button>
+<div className="flex gap-3">
+          <Button variant="outline" onClick={() => setIsBudgetModalOpen(true)}>
+            <ApperIcon name="Target" size={20} />
+            Manage Budgets
+          </Button>
+          <Button onClick={handleAdd}>
+            <ApperIcon name="Plus" size={20} />
+            Add Expense
+          </Button>
+        </div>
       </div>
 
       {expenses.length > 0 && (
@@ -171,20 +212,55 @@ const Expenses = () => {
             />
           </Card>
 
-          <Card>
+<Card>
             <h2 className="text-xl font-bold text-gray-900 mb-4">Summary</h2>
             <div className="space-y-4">
               <div className="p-4 bg-primary/10 rounded-lg">
                 <p className="text-sm text-gray-600 mb-1">Total Expenses</p>
                 <p className="text-3xl font-bold text-primary">${totalExpenses.toFixed(2)}</p>
               </div>
-              <div className="space-y-2">
-                {Object.entries(categoryTotals).map(([category, amount]) => (
-                  <div key={category} className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-600">{category}</span>
-                    <span className="font-bold text-gray-900">${amount.toFixed(2)}</span>
-                  </div>
-                ))}
+              <div className="space-y-3">
+                {Object.entries(categoryTotals).map(([category, amount]) => {
+                  const budgetInfo = getBudgetProgress(category, amount);
+                  
+                  return (
+                    <div key={category} className="p-3 border border-gray-100 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-gray-600 font-medium">{category}</span>
+                        <span className="font-bold text-gray-900">${amount.toFixed(2)}</span>
+                      </div>
+                      
+                      {budgetInfo && (
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-500">
+                              Budget: ${budgetInfo.budget.toFixed(2)}
+                            </span>
+                            <span className={`font-medium ${
+                              budgetInfo.isOverBudget ? 'text-error' : 
+                              budgetInfo.percentage >= 80 ? 'text-warning' : 'text-success'
+                            }`}>
+                              {budgetInfo.percentage.toFixed(0)}%
+                            </span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full transition-all duration-300 ${
+                                budgetInfo.isOverBudget ? 'bg-error' :
+                                budgetInfo.percentage >= 80 ? 'bg-warning' : 'bg-success'
+                              }`}
+                              style={{ width: `${Math.min(budgetInfo.percentage, 100)}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
+                      {!budgetInfo && (
+                        <p className="text-xs text-gray-400 mt-1">No budget set</p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </Card>
@@ -266,8 +342,7 @@ const Expenses = () => {
           ))}
         </div>
       )}
-
-      <Modal
+<Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={selectedExpense ? "Edit Expense" : "Add New Expense"}
@@ -277,6 +352,19 @@ const Expenses = () => {
           expense={selectedExpense}
           onSuccess={handleSuccess}
           onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={isBudgetModalOpen}
+        onClose={() => setIsBudgetModalOpen(false)}
+        title="Manage Category Budgets"
+      >
+        <BudgetForm
+          farmId={selectedFarmId}
+          budgets={budgets}
+          onSuccess={handleBudgetSuccess}
+          onCancel={() => setIsBudgetModalOpen(false)}
         />
       </Modal>
     </div>
