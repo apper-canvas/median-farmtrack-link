@@ -6,6 +6,7 @@ const navItems = [
     { path: "/dashboard", icon: "LayoutDashboard", label: "Dashboard" },
     { path: "/farms", icon: "Farm", label: "Farms" },
     { path: "/crops", icon: "Sprout", label: "Crops" },
+    { path: "/equipment", icon: "Truck", label: "Equipment" },
     { path: "/tasks", icon: "ClipboardList", label: "Tasks" },
     { path: "/expenses", icon: "DollarSign", label: "Expenses" },
     { path: "/weather", icon: "CloudSun", label: "Weather" }

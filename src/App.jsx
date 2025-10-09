@@ -15,6 +15,7 @@ import Tasks from "@/components/pages/Tasks";
 import Dashboard from "@/components/pages/Dashboard";
 import Crops from "@/components/pages/Crops";
 import Farms from "@/components/pages/Farms";
+import Equipments from "@/components/pages/Equipments";
 import Layout from "@/components/organisms/Layout";
 
 // Create auth context
@@ -145,7 +146,8 @@ function AppContent() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="farms" element={<Farms />} />
-<Route path="crops" element={<Crops />} />
+          <Route path="crops" element={<Crops />} />
+          <Route path="equipment" element={<Equipments />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path="expenses" element={<Expenses />} />
           <Route path="weather" element={<Weather />} />
