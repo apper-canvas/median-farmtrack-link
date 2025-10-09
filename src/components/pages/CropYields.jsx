@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-import YieldForm from "@/components/organisms/YieldForm";
-import YieldAnalytics from "@/components/molecules/YieldAnalytics";
-import cropYieldService from "@/services/api/cropYieldService";
 import ApperIcon from "@/components/ApperIcon";
 import Modal from "@/components/molecules/Modal";
+import YieldAnalytics from "@/components/molecules/YieldAnalytics";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
+import YieldForm from "@/components/organisms/YieldForm";
 import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
+import cropYieldService from "@/services/api/cropYieldService";
 
 const CropYields = () => {
   const [yields, setYields] = useState([]);
@@ -133,9 +133,9 @@ const handleEdit = (yieldRecord) => {
               }
             />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {yields.map((yield) => (
-                <Card key={yield.Id} hover>
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {yields.map((yieldRecord) => (
+                <Card key={yieldRecord.Id} hover>
                   <div className="space-y-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -143,32 +143,31 @@ const handleEdit = (yieldRecord) => {
                           <ApperIcon name="BarChart" size={24} className="text-primary" />
                         </div>
                         <div>
-                          <h3 className="font-bold text-gray-900 text-lg">{yield.crop_name_c}</h3>
+                          <h3 className="font-bold text-gray-900 text-lg">{yieldRecord.crop_name_c}</h3>
                           <p className="text-sm text-gray-500">
-                            {format(new Date(yield.harvest_date_c), "MMM d, yyyy")}
+                            {format(new Date(yieldRecord.harvest_date_c), "MMM d, yyyy")}
                           </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-2">
+<div className="space-y-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-600">Yield Amount</span>
                         <span className="font-bold text-primary text-lg">
-                          {yield.yield_amount_c} {yield.yield_unit_c}
+                          {yieldRecord.yield_amount_c} {yieldRecord.yield_unit_c}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-600">Harvest Date</span>
                         <span className="font-medium text-gray-900">
-                          {format(new Date(yield.harvest_date_c), "MMM d, yyyy")}
+                          {format(new Date(yieldRecord.harvest_date_c), "MMM d, yyyy")}
                         </span>
                       </div>
                     </div>
-
-                    {yield.Tags && (
+{yieldRecord.Tags && (
                       <div className="flex flex-wrap gap-1">
-                        {yield.Tags.split(',').slice(0, 3).map((tag, index) => (
+                        {yieldRecord.Tags.split(',').slice(0, 3).map((tag, index) => (
                           <Badge key={index} variant="outline" className="text-xs">
                             {tag.trim()}
                           </Badge>
@@ -176,17 +175,17 @@ const handleEdit = (yieldRecord) => {
                       </div>
                     )}
 
-                    {yield.notes_c && (
+                    {yieldRecord.notes_c && (
                       <p className="text-sm text-gray-600 bg-surface p-3 rounded-lg">
-                        {yield.notes_c}
+                        {yieldRecord.notes_c}
                       </p>
                     )}
 
-                    <div className="flex gap-2 pt-2">
+<div className="flex gap-2 pt-2">
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleEdit(yield)}
+                        onClick={() => handleEdit(yieldRecord)}
                         className="flex-1"
                       >
                         <ApperIcon name="Edit" size={16} />
@@ -195,7 +194,7 @@ const handleEdit = (yieldRecord) => {
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleDelete(yield.Id)}
+                        onClick={() => handleDelete(yieldRecord.Id)}
                         className="text-error hover:bg-error/10"
                       >
                         <ApperIcon name="Trash2" size={16} />

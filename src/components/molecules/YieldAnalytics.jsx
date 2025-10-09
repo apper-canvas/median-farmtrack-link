@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { format, parseISO, subMonths } from "date-fns";
-import cropYieldService from "@/services/api/cropYieldService";
 import ApperIcon from "@/components/ApperIcon";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
@@ -9,6 +8,7 @@ import Crops from "@/components/pages/Crops";
 import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
+import cropYieldService from "@/services/api/cropYieldService";
 
 const YieldAnalytics = ({ cropName = null, showCropFilter = true }) => {
   const [yields, setYields] = useState([]);
@@ -64,20 +64,20 @@ const cutoffDate = subMonths(new Date(), monthsBack);
   const calculateStats = () => {
     if (yields.length === 0) return null;
 
-    const totalYield = yields.reduce((sum, yield) => sum + (yield.yield_amount_c || 0), 0);
+const totalYield = yields.reduce((sum, yieldRecord) => sum + (yieldRecord.yield_amount_c || 0), 0);
     const averageYield = totalYield / yields.length;
     const highestYield = Math.max(...yields.map(y => y.yield_amount_c || 0));
     const lowestYield = Math.min(...yields.map(y => y.yield_amount_c || 0));
 
     // Group by crop for crop comparison
-    const cropStats = yields.reduce((acc, yield) => {
-      const crop = yield.crop_name_c;
+const cropStats = yields.reduce((acc, yieldRecord) => {
+      const crop = yieldRecord.crop_name_c;
       if (!acc[crop]) {
         acc[crop] = { total: 0, count: 0, yields: [] };
       }
-      acc[crop].total += yield.yield_amount_c || 0;
+      acc[crop].total += yieldRecord.yield_amount_c || 0;
       acc[crop].count += 1;
-      acc[crop].yields.push(yield);
+      acc[crop].yields.push(yieldRecord);
       return acc;
     }, {});
 
@@ -249,26 +249,26 @@ const cutoffDate = subMonths(new Date(), monthsBack);
         </div>
         
         <div className="space-y-3">
-          {yields.slice(0, 10).map((yield) => (
-            <div key={yield.Id} className="flex items-center justify-between p-4 bg-surface rounded-lg">
+{yields.slice(0, 10).map((yieldRecord) => (
+            <div key={yieldRecord.Id} className="flex items-center justify-between p-4 bg-surface rounded-lg">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-success/10 rounded-lg flex items-center justify-center">
                   <ApperIcon name="Sprout" size={20} className="text-success" />
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">{yield.crop_name_c}</p>
+                  <p className="font-medium text-gray-900">{yieldRecord.crop_name_c}</p>
                   <p className="text-sm text-gray-500">
-                    {format(parseISO(yield.harvest_date_c), "MMM d, yyyy")}
+                    {format(parseISO(yieldRecord.harvest_date_c), "MMM d, yyyy")}
                   </p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold text-gray-900">
-                  {yield.yield_amount_c} {yield.yield_unit_c}
+                  {yieldRecord.yield_amount_c} {yieldRecord.yield_unit_c}
                 </p>
-                {yield.Tags && (
+                {yieldRecord.Tags && (
                   <div className="flex gap-1 mt-1">
-                    {yield.Tags.split(',').slice(0, 2).map((tag, index) => (
+                    {yieldRecord.Tags.split(',').slice(0, 2).map((tag, index) => (
                       <Badge key={index} variant="outline" className="text-xs">
                         {tag.trim()}
                       </Badge>

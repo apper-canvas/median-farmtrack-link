@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { format } from "date-fns";
-import cropYieldService from "@/services/api/cropYieldService";
 import ApperIcon from "@/components/ApperIcon";
 import StatCard from "@/components/molecules/StatCard";
 import Error from "@/components/ui/Error";
@@ -12,6 +11,7 @@ import Tasks from "@/components/pages/Tasks";
 import Crops from "@/components/pages/Crops";
 import Card from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
+import cropYieldService from "@/services/api/cropYieldService";
 import expenseService from "@/services/api/expenseService";
 import taskService from "@/services/api/taskService";
 import weatherService from "@/services/api/weatherService";
@@ -193,9 +193,9 @@ const recentYields = yields
             </div>
           ) : (
             <div className="space-y-3">
-              {yields.slice(0, 5).map((yield) => (
+{yields.slice(0, 5).map((yieldRecord) => (
                 <div
-                  key={yield.Id}
+                  key={yieldRecord.Id}
                   className="flex items-center justify-between p-3 bg-surface rounded-lg"
                 >
                   <div className="flex items-center gap-3">
@@ -203,14 +203,14 @@ const recentYields = yields
                       <ApperIcon name="BarChart" size={20} className="text-primary" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{yield.crop_name_c}</p>
+                      <p className="font-medium text-gray-900">{yieldRecord.crop_name_c}</p>
                       <p className="text-sm text-gray-500">
-                        {format(new Date(yield.harvest_date_c), "MMM d, yyyy")}
+                        {format(new Date(yieldRecord.harvest_date_c), "MMM d, yyyy")}
                       </p>
                     </div>
                   </div>
                   <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
-                    {yield.yield_amount_c} {yield.yield_unit_c}
+                    {yieldRecord.yield_amount_c} {yieldRecord.yield_unit_c}
                   </span>
                 </div>
               ))}
@@ -250,7 +250,8 @@ const recentYields = yields
                   <div
                     key={task.Id}
                     className="flex items-center justify-between p-3 bg-surface rounded-lg"
-<div className="flex items-center gap-3">
+>
+                    <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                         task.priority_c === 'High' ? 'bg-error/10' :
                         task.priority_c === 'Medium' ? 'bg-warning/10' : 'bg-success/10'
@@ -263,11 +264,9 @@ const recentYields = yields
                       <div>
                         <p className="font-medium text-gray-900">{task.title_c}</p>
                         <p className="text-sm text-gray-500">
-                        <p className="text-sm text-gray-500">
                           Due: {format(new Date(task.due_date_c), "MMM d")}
                         </p>
                       </div>
-                    </div>
                   </div>
                 );
               })}

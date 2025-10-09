@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { differenceInDays, format } from "date-fns";
 import { toast } from "react-toastify";
-import YieldForm from "@/components/organisms/YieldForm";
-import YieldAnalytics from "@/components/molecules/YieldAnalytics";
-import cropYieldService from "@/services/api/cropYieldService";
 import ApperIcon from "@/components/ApperIcon";
 import Modal from "@/components/molecules/Modal";
+import YieldAnalytics from "@/components/molecules/YieldAnalytics";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
 import CropForm from "@/components/organisms/CropForm";
+import YieldForm from "@/components/organisms/YieldForm";
 import Badge from "@/components/atoms/Badge";
 import Card from "@/components/atoms/Card";
 import Button from "@/components/atoms/Button";
+import cropYieldService from "@/services/api/cropYieldService";
 import cropService from "@/services/api/cropService";
 
 const Crops = () => {
@@ -108,7 +108,7 @@ const handleSuccess = () => {
     loadCrops();
   };
 
-  const handleDeleteYield = async (id) => {
+const handleDeleteYield = async (id) => {
     if (!confirm("Are you sure you want to delete this yield record?")) return;
     
     try {
@@ -120,15 +120,15 @@ const handleSuccess = () => {
       console.error(error);
     }
   };
-};
 
   const getCropYieldData = (cropName) => {
     return cropYields.filter(yieldRecord => yieldRecord.crop_name_c === cropName);
   };
+
   if (loading) return <Loading text="Loading crops..." />;
   if (error) return <Error message={error} onRetry={loadCrops} />;
   
-if (!selectedFarmId) {
+  if (!selectedFarmId) {
     return (
       <Empty
         icon="Map"
@@ -212,7 +212,7 @@ return (
         ))}
       </div>
 
-      {filteredCrops.length === 0 ? (
+{filteredCrops.length === 0 ? (
         <Empty
           icon="Sprout"
           title="No crops found"
@@ -222,11 +222,11 @@ return (
           action={filterStage === "All" ? handleAdd : undefined}
           actionText="Add Crop"
         />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-{/* Tab Content */}
+      ) : null}
+
+      {/* Tab Content */}
       {activeTab === "crops" && (
-        <div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCrops.map((crop) => {
             const daysUntilHarvest = differenceInDays(
               new Date(crop.expected_harvest_date_c),
@@ -335,10 +335,8 @@ return (
       {activeTab === "analytics" && (
         <YieldAnalytics />
       )}
-          })}
-        </div>
-      )}
-<Modal
+
+      <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={selectedCrop ? "Edit Crop" : "Add New Crop"}
@@ -361,7 +359,7 @@ return (
           onSuccess={handleYieldSuccess}
           onCancel={() => setIsYieldModalOpen(false)}
         />
-      </Modal>
+</Modal>
     </div>
   );
 };
