@@ -261,12 +261,13 @@ const recentYields = yields
                           task.priority_c === 'Medium' ? 'text-warning' : 'text-success'
                         } />
                       </div>
-                      <div>
+<div>
                         <p className="font-medium text-gray-900">{task.title_c}</p>
                         <p className="text-sm text-gray-500">
                           Due: {format(new Date(task.due_date_c), "MMM d")}
                         </p>
                       </div>
+                    </div>
                   </div>
                 );
               })}
