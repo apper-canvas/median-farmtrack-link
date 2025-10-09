@@ -2,8 +2,9 @@ import { NavLink } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 
 const Navigation = ({ isMobile = false, onNavigate }) => {
-  const navItems = [
+const navItems = [
     { path: "/dashboard", icon: "LayoutDashboard", label: "Dashboard" },
+    { path: "/farms", icon: "Farm", label: "Farms" },
     { path: "/crops", icon: "Sprout", label: "Crops" },
     { path: "/tasks", icon: "ClipboardList", label: "Tasks" },
     { path: "/expenses", icon: "DollarSign", label: "Expenses" },

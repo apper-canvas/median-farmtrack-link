@@ -14,6 +14,7 @@ import Expenses from "@/components/pages/Expenses";
 import Tasks from "@/components/pages/Tasks";
 import Dashboard from "@/components/pages/Dashboard";
 import Crops from "@/components/pages/Crops";
+import Farms from "@/components/pages/Farms";
 import Layout from "@/components/organisms/Layout";
 
 // Create auth context
@@ -140,9 +141,10 @@ function AppContent() {
         <Route path="/error" element={<ErrorPage />} />
         <Route path="/prompt-password/:appId/:emailAddress/:provider" element={<PromptPassword />} />
         <Route path="/reset-password/:appId/:fields" element={<ResetPassword />} />
-        <Route path="/" element={<Layout />}>
+<Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="farms" element={<Farms />} />
           <Route path="crops" element={<Crops />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path="expenses" element={<Expenses />} />
