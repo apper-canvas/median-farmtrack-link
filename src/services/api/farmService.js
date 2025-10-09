@@ -166,5 +166,3 @@ const farmService = {
 };
 
 export default farmService;
-
-export default farmService;

@@ -263,5 +263,3 @@ const expenseService = {
 };
 
 export default expenseService;
-
-export default expenseService;
