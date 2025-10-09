@@ -7,11 +7,12 @@ import Select from "@/components/atoms/Select";
 import farmService from "@/services/api/farmService";
 
 const FarmForm = ({ farm, onSuccess, onCancel }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name_c: farm?.name_c || "",
     size_c: farm?.size_c || "",
     unit_c: farm?.unit_c || "acres",
     location_c: farm?.location_c || "",
+    soil_type_c: farm?.soil_type_c || "",
     Tags: farm?.Tags || ""
   });
   const [loading, setLoading] = useState(false);
@@ -118,6 +119,13 @@ const FarmForm = ({ farm, onSuccess, onCancel }) => {
         value={formData.location_c}
         onChange={(e) => handleInputChange("location_c", e.target.value)}
         placeholder="Enter farm location"
+      />
+<Input
+        label="Soil Type"
+        value={formData.soil_type_c}
+        onChange={(e) => handleInputChange("soil_type_c", e.target.value)}
+        placeholder="e.g., Clay, Sandy, Loam, Silt"
+        helpText="Describe the primary soil type for this farm"
       />
 
       <Input

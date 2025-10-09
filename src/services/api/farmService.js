@@ -10,11 +10,12 @@ const farmService = {
     try {
       const params = {
         fields: [
-          {"field": {"Name": "Name"}},
+{"field": {"Name": "Name"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "size_c"}},
           {"field": {"Name": "unit_c"}},
           {"field": {"Name": "location_c"}},
+          {"field": {"Name": "soil_type_c"}},
           {"field": {"Name": "Tags"}}
         ]
       };
@@ -36,11 +37,12 @@ const farmService = {
     try {
       const params = {
         fields: [
-          {"field": {"Name": "Name"}},
+{"field": {"Name": "Name"}},
           {"field": {"Name": "name_c"}},
           {"field": {"Name": "size_c"}},
           {"field": {"Name": "unit_c"}},
           {"field": {"Name": "location_c"}},
+          {"field": {"Name": "soil_type_c"}},
           {"field": {"Name": "Tags"}}
         ]
       };
@@ -63,7 +65,8 @@ const farmService = {
           name_c: farm.name_c,
           size_c: farm.size_c ? parseFloat(farm.size_c) : null,
           unit_c: farm.unit_c,
-          location_c: farm.location_c,
+location_c: farm.location_c,
+          soil_type_c: farm.soil_type_c || "",
           Tags: farm.Tags || ""
         }]
       };
@@ -104,7 +107,8 @@ const farmService = {
           name_c: data.name_c,
           size_c: data.size_c ? parseFloat(data.size_c) : null,
           unit_c: data.unit_c,
-          location_c: data.location_c,
+location_c: data.location_c,
+          soil_type_c: data.soil_type_c || "",
           Tags: data.Tags || ""
         }]
       };
