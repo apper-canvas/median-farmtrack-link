@@ -1,67 +1,210 @@
-import expensesData from "@/services/mockData/expenses.json";
+// Initialize ApperClient with Project ID and Public Key
+const { ApperClient } = window.ApperSDK;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
-let expenses = [...expensesData];
+// Mock budget data for budget management (not in database yet)
 let budgets = [];
-
-const delay = () => new Promise(resolve => setTimeout(resolve, 300));
 
 const expenseService = {
   getAll: async () => {
-    await delay();
-    return [...expenses];
+    try {
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "category_c"}},
+          {"field": {"Name": "amount_c"}},
+          {"field": {"Name": "date_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "farm_id_c"}},
+          {"field": {"Name": "Tags"}}
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords('expense_c', params);
+      
+      if (!response?.data?.length) {
+        return [];
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching expenses:", error?.response?.data?.message || error);
+      return [];
+    }
   },
 
   getById: async (id) => {
-    await delay();
-    const expense = expenses.find(e => e.Id === parseInt(id));
-    return expense ? { ...expense } : null;
+    try {
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "category_c"}},
+          {"field": {"Name": "amount_c"}},
+          {"field": {"Name": "date_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "farm_id_c"}},
+          {"field": {"Name": "Tags"}}
+        ]
+      };
+      
+      const response = await apperClient.getRecordById('expense_c', parseInt(id), params);
+      
+      return response?.data || null;
+    } catch (error) {
+      console.error(`Error fetching expense ${id}:`, error?.response?.data?.message || error);
+      return null;
+    }
   },
 
   getByFarmId: async (farmId) => {
-    await delay();
-    return expenses.filter(e => e.farmId === parseInt(farmId)).map(e => ({ ...e }));
+    try {
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "category_c"}},
+          {"field": {"Name": "amount_c"}},
+          {"field": {"Name": "date_c"}},
+          {"field": {"Name": "description_c"}},
+          {"field": {"Name": "farm_id_c"}},
+          {"field": {"Name": "Tags"}}
+        ],
+        where: [{"FieldName": "farm_id_c", "Operator": "EqualTo", "Values": [parseInt(farmId)]}]
+      };
+      
+      const response = await apperClient.fetchRecords('expense_c', params);
+      
+      if (!response?.data?.length) {
+        return [];
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching expenses by farm:", error?.response?.data?.message || error);
+      return [];
+    }
   },
 
   create: async (expense) => {
-    await delay();
-    const maxId = expenses.length > 0 ? Math.max(...expenses.map(e => e.Id)) : 0;
-    const newExpense = {
-      Id: maxId + 1,
-      ...expense,
-      createdAt: Date.now()
-    };
-    expenses.push(newExpense);
-    return { ...newExpense };
+    try {
+      // Only include Updateable fields for create operation
+      const params = {
+        records: [{
+          Name: expense.Name || expense.description_c?.substring(0, 50),
+          category_c: expense.category_c,
+          amount_c: parseFloat(expense.amount_c),
+          date_c: expense.date_c,
+          description_c: expense.description_c,
+          farm_id_c: parseInt(expense.farm_id_c),
+          Tags: expense.Tags || ""
+        }]
+      };
+      
+      const response = await apperClient.createRecord('expense_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} records:`, failed);
+          failed.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        return successful.length > 0 ? successful[0].data : null;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error creating expense:", error?.response?.data?.message || error);
+      throw error;
+    }
   },
 
   update: async (id, data) => {
-    await delay();
-    const index = expenses.findIndex(e => e.Id === parseInt(id));
-    if (index !== -1) {
-      expenses[index] = { ...expenses[index], ...data };
-      return { ...expenses[index] };
+    try {
+      // Only include Updateable fields for update operation
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: data.Name || data.description_c?.substring(0, 50),
+          category_c: data.category_c,
+          amount_c: parseFloat(data.amount_c),
+          date_c: data.date_c,
+          description_c: data.description_c,
+          farm_id_c: data.farm_id_c ? parseInt(data.farm_id_c) : null,
+          Tags: data.Tags || ""
+        }]
+      };
+      
+      const response = await apperClient.updateRecord('expense_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} records:`, failed);
+          failed.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        return successful.length > 0 ? successful[0].data : null;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error updating expense:", error?.response?.data?.message || error);
+      throw error;
     }
-    return null;
   },
 
   delete: async (id) => {
-    await delay();
-    const index = expenses.findIndex(e => e.Id === parseInt(id));
-    if (index !== -1) {
-      expenses.splice(index, 1);
+    try {
+      const params = { 
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await apperClient.deleteRecord('expense_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+      
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to delete ${failed.length} records:`, failed);
+        }
+        return successful.length > 0;
+      }
       return true;
+    } catch (error) {
+      console.error("Error deleting expense:", error?.response?.data?.message || error);
+      return false;
     }
-    return false;
   },
 
-  // Budget management functions
+  // Budget management functions - using mock data as budgets not in database
   getBudgetsByFarm: async (farmId) => {
-    await delay();
     return budgets.filter(b => b.farmId === parseInt(farmId)).map(b => ({ ...b }));
   },
 
   setBudget: async (farmId, category, budgetAmount) => {
-    await delay();
     const existingIndex = budgets.findIndex(b => 
       b.farmId === parseInt(farmId) && b.category === category
     );
@@ -87,14 +230,15 @@ const expenseService = {
   },
 
   checkBudgetAlerts: async (farmId) => {
-    await delay();
     const farmBudgets = budgets.filter(b => b.farmId === parseInt(farmId));
-    const farmExpenses = expenses.filter(e => e.farmId === parseInt(farmId));
+    
+    // Get expenses from database for alert calculation
+    const farmExpenses = await expenseService.getByFarmId(farmId);
     const alerts = [];
 
     for (const budget of farmBudgets) {
-      const categoryExpenses = farmExpenses.filter(e => e.category === budget.category);
-      const totalSpent = categoryExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+      const categoryExpenses = farmExpenses.filter(e => e.category_c === budget.category);
+      const totalSpent = categoryExpenses.reduce((sum, expense) => sum + expense.amount_c, 0);
       const percentage = (totalSpent / budget.budgetAmount) * 100;
 
       if (percentage >= 100) {
@@ -117,5 +261,7 @@ const expenseService = {
     return alerts;
   }
 };
+
+export default expenseService;
 
 export default expenseService;

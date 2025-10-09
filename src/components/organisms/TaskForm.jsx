@@ -9,12 +9,12 @@ import cropService from "@/services/api/cropService";
 
 const TaskForm = ({ farmId, task, onSuccess, onCancel }) => {
 const [formData, setFormData] = useState({
-    title: task?.title || "",
-    description: task?.description || "",
-    dueDate: task?.dueDate || "",
-    priority: task?.priority || "Medium",
-    status: task?.status || "Pending",
-    cropId: task?.cropId || ""
+    title_c: task?.title_c || "",
+    description_c: task?.description_c || "",
+    due_date_c: task?.due_date_c || "",
+    priority_c: task?.priority_c || "Medium",
+    status_c: task?.status_c || "Pending",
+    crop_id_c: task?.crop_id_c || ""
   });
 
   const [crops, setCrops] = useState([]);
@@ -47,7 +47,7 @@ const [formData, setFormData] = useState({
 
   const cropOptions = [
     { value: "", label: "No specific crop" },
-    ...crops.map(crop => ({ value: crop.Id, label: `${crop.cropName} - ${crop.variety}` }))
+...crops.map(crop => ({ value: crop.Id, label: `${crop.crop_name_c} - ${crop.variety_c}` }))
   ];
 
   const handleSubmit = async (e) => {
@@ -55,10 +55,10 @@ const [formData, setFormData] = useState({
     setLoading(true);
 
     try {
-      const taskData = {
+const taskData = {
         ...formData,
-        farmId,
-        cropId: formData.cropId ? parseInt(formData.cropId) : null
+        farm_id_c: farmId,
+        crop_id_c: formData.crop_id_c ? parseInt(formData.crop_id_c) : null
       };
 
       if (task) {
@@ -88,8 +88,8 @@ const [formData, setFormData] = useState({
     <form onSubmit={handleSubmit} className="space-y-6">
       <Input
         label="Task Title"
-        name="title"
-        value={formData.title}
+name="title_c"
+        value={formData.title_c}
         onChange={handleChange}
         placeholder="e.g., Water corn field"
         required
@@ -97,8 +97,8 @@ const [formData, setFormData] = useState({
 
       <TextArea
         label="Description"
-        name="description"
-        value={formData.description}
+name="description_c"
+        value={formData.description_c}
         onChange={handleChange}
         placeholder="Add task details..."
         rows={3}
@@ -107,33 +107,33 @@ const [formData, setFormData] = useState({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label="Due Date"
-          name="dueDate"
+name="due_date_c"
           type="date"
-          value={formData.dueDate}
+          value={formData.due_date_c}
           onChange={handleChange}
           required
         />
 
         <Select
           label="Priority"
-          name="priority"
-          value={formData.priority}
+name="priority_c"
+          value={formData.priority_c}
           onChange={handleChange}
           options={priorityOptions}
         />
 
         <Select
           label="Status"
-          name="status"
-          value={formData.status}
+name="status_c"
+          value={formData.status_c}
           onChange={handleChange}
           options={statusOptions}
         />
 
         <Select
           label="Related Crop"
-          name="cropId"
-          value={formData.cropId}
+name="crop_id_c"
+          value={formData.crop_id_c}
           onChange={handleChange}
           options={cropOptions}
         />

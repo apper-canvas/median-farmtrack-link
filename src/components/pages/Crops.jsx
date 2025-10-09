@@ -141,9 +141,9 @@ const Crops = () => {
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCrops.map((crop) => {
+{filteredCrops.map((crop) => {
             const daysUntilHarvest = differenceInDays(
-              new Date(crop.expectedHarvestDate),
+              new Date(crop.expected_harvest_date_c),
               new Date()
             );
 
@@ -156,29 +156,29 @@ const Crops = () => {
                         <ApperIcon name="Sprout" size={24} className="text-success" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-900 text-lg">{crop.cropName}</h3>
-                        <p className="text-sm text-gray-500">{crop.variety}</p>
+<h3 className="font-bold text-gray-900 text-lg">{crop.crop_name_c}</h3>
+                        <p className="text-sm text-gray-500">{crop.variety_c}</p>
                       </div>
                     </div>
-                    <Badge variant={stageColors[crop.growthStage]}>
-                      {crop.growthStage}
+<Badge variant={stageColors[crop.growth_stage_c]}>
+                      {crop.growth_stage_c}
                     </Badge>
                   </div>
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Planted</span>
-                      <span className="font-medium text-gray-900">
-                        {format(new Date(crop.plantingDate), "MMM d, yyyy")}
+<span className="font-medium text-gray-900">
+                        {format(new Date(crop.planting_date_c), "MMM d, yyyy")}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Expected Harvest</span>
-                      <span className="font-medium text-gray-900">
-                        {format(new Date(crop.expectedHarvestDate), "MMM d, yyyy")}
+<span className="font-medium text-gray-900">
+                        {format(new Date(crop.expected_harvest_date_c), "MMM d, yyyy")}
                       </span>
                     </div>
-                    {daysUntilHarvest > 0 && crop.status === "Active" && (
+{daysUntilHarvest > 0 && crop.status_c === "Active" && (
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-600">Days Until Harvest</span>
                         <span className="font-bold text-primary">
@@ -188,9 +188,9 @@ const Crops = () => {
                     )}
                   </div>
 
-                  {crop.notes && (
+{crop.notes_c && (
                     <p className="text-sm text-gray-600 bg-surface p-3 rounded-lg">
-                      {crop.notes}
+                      {crop.notes_c}
                     </p>
                   )}
 

@@ -69,16 +69,16 @@ const Dashboard = () => {
     );
   }
 
-  const activeCrops = crops.filter(c => c.status === "Active");
-  const pendingTasks = tasks.filter(t => t.status === "Pending");
-  const monthExpenses = expenses
+const activeCrops = crops.filter(c => c.status_c === "Active");
+  const pendingTasks = tasks.filter(t => t.status_c === "Pending");
+const monthExpenses = expenses
     .filter(e => {
-      const expenseDate = new Date(e.date);
+      const expenseDate = new Date(e.date_c);
       const now = new Date();
       return expenseDate.getMonth() === now.getMonth() && 
              expenseDate.getFullYear() === now.getFullYear();
     })
-    .reduce((sum, e) => sum + e.amount, 0);
+    .reduce((sum, e) => sum + e.amount_c, 0);
 
   return (
     <div className="space-y-6">
@@ -147,12 +147,12 @@ const Dashboard = () => {
                       <ApperIcon name="Sprout" size={20} className="text-success" />
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{crop.cropName}</p>
-                      <p className="text-sm text-gray-500">{crop.variety}</p>
+<p className="font-medium text-gray-900">{crop.crop_name_c}</p>
+                      <p className="text-sm text-gray-500">{crop.variety_c}</p>
                     </div>
                   </div>
                   <span className="px-3 py-1 bg-success/10 text-success text-xs font-medium rounded-full">
-                    {crop.growthStage}
+{crop.growth_stage_c}
                   </span>
                 </div>
               ))}
@@ -194,11 +194,11 @@ const Dashboard = () => {
                     className="flex items-center justify-between p-3 bg-surface rounded-lg"
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-1 h-10 rounded-full bg-${priorityColor[task.priority]}`} />
+<div className={`w-1 h-10 rounded-full bg-${priorityColor[task.priority_c]}`} />
                       <div>
-                        <p className="font-medium text-gray-900">{task.title}</p>
+                        <p className="font-medium text-gray-900">{task.title_c}</p>
                         <p className="text-sm text-gray-500">
-                          Due: {format(new Date(task.dueDate), "MMM d")}
+                          Due: {format(new Date(task.due_date_c), "MMM d")}
                         </p>
                       </div>
                     </div>

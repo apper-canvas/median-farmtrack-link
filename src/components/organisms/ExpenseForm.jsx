@@ -7,11 +7,11 @@ import Button from "@/components/atoms/Button";
 import expenseService from "@/services/api/expenseService";
 
 const ExpenseForm = ({ farmId, expense, onSuccess, onCancel }) => {
-  const [formData, setFormData] = useState({
-    category: expense?.category || "Seeds",
-    amount: expense?.amount || "",
-    date: expense?.date || "",
-    description: expense?.description || ""
+const [formData, setFormData] = useState({
+    category_c: expense?.category_c || "Seeds",
+    amount_c: expense?.amount_c || "",
+    date_c: expense?.date_c || "",
+    description_c: expense?.description_c || ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -29,10 +29,10 @@ const ExpenseForm = ({ farmId, expense, onSuccess, onCancel }) => {
     setLoading(true);
 
     try {
-      const expenseData = {
+const expenseData = {
         ...formData,
-        farmId,
-        amount: parseFloat(formData.amount)
+        farm_id_c: farmId,
+        amount_c: parseFloat(formData.amount_c)
       };
 
       if (expense) {
@@ -63,19 +63,19 @@ const ExpenseForm = ({ farmId, expense, onSuccess, onCancel }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Select
           label="Category"
-          name="category"
-          value={formData.category}
+name="category_c"
+          value={formData.category_c}
           onChange={handleChange}
           options={categoryOptions}
         />
 
         <Input
           label="Amount ($)"
-          name="amount"
+name="amount_c"
           type="number"
           step="0.01"
           min="0"
-          value={formData.amount}
+          value={formData.amount_c}
           onChange={handleChange}
           placeholder="0.00"
           required
@@ -83,9 +83,9 @@ const ExpenseForm = ({ farmId, expense, onSuccess, onCancel }) => {
 
         <Input
           label="Date"
-          name="date"
+name="date_c"
           type="date"
-          value={formData.date}
+          value={formData.date_c}
           onChange={handleChange}
           required
         />
@@ -93,8 +93,8 @@ const ExpenseForm = ({ farmId, expense, onSuccess, onCancel }) => {
 
       <TextArea
         label="Description"
-        name="description"
-        value={formData.description}
+name="description_c"
+        value={formData.description_c}
         onChange={handleChange}
         placeholder="Add expense details..."
         rows={3}

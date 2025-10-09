@@ -7,14 +7,14 @@ import Button from "@/components/atoms/Button";
 import cropService from "@/services/api/cropService";
 
 const CropForm = ({ farmId, crop, onSuccess, onCancel }) => {
-  const [formData, setFormData] = useState({
-    cropName: crop?.cropName || "",
-    variety: crop?.variety || "",
-    plantingDate: crop?.plantingDate || "",
-    expectedHarvestDate: crop?.expectedHarvestDate || "",
-    growthStage: crop?.growthStage || "Planted",
-    status: crop?.status || "Active",
-    notes: crop?.notes || ""
+const [formData, setFormData] = useState({
+    crop_name_c: crop?.crop_name_c || "",
+    variety_c: crop?.variety_c || "",
+    planting_date_c: crop?.planting_date_c || "",
+    expected_harvest_date_c: crop?.expected_harvest_date_c || "",
+    growth_stage_c: crop?.growth_stage_c || "Planted",
+    status_c: crop?.status_c || "Active",
+    notes_c: crop?.notes_c || ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ const CropForm = ({ farmId, crop, onSuccess, onCancel }) => {
         await cropService.update(crop.Id, formData);
         toast.success("Crop updated successfully!");
       } else {
-        await cropService.create({ ...formData, farmId });
+await cropService.create({ ...formData, farm_id_c: farmId });
         toast.success("Crop added successfully!");
       }
       onSuccess();
@@ -64,8 +64,8 @@ const CropForm = ({ farmId, crop, onSuccess, onCancel }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label="Crop Name"
-          name="cropName"
-          value={formData.cropName}
+name="crop_name_c"
+          value={formData.crop_name_c}
           onChange={handleChange}
           placeholder="e.g., Corn, Wheat, Tomatoes"
           required
@@ -73,8 +73,8 @@ const CropForm = ({ farmId, crop, onSuccess, onCancel }) => {
 
         <Input
           label="Variety"
-          name="variety"
-          value={formData.variety}
+name="variety_c"
+          value={formData.variety_c}
           onChange={handleChange}
           placeholder="e.g., Sweet Golden"
           required
@@ -82,34 +82,34 @@ const CropForm = ({ farmId, crop, onSuccess, onCancel }) => {
 
         <Input
           label="Planting Date"
-          name="plantingDate"
+name="planting_date_c"
           type="date"
-          value={formData.plantingDate}
+          value={formData.planting_date_c}
           onChange={handleChange}
           required
         />
 
         <Input
           label="Expected Harvest Date"
-          name="expectedHarvestDate"
+name="expected_harvest_date_c"
           type="date"
-          value={formData.expectedHarvestDate}
+          value={formData.expected_harvest_date_c}
           onChange={handleChange}
           required
         />
 
         <Select
           label="Growth Stage"
-          name="growthStage"
-          value={formData.growthStage}
+name="growth_stage_c"
+          value={formData.growth_stage_c}
           onChange={handleChange}
           options={growthStages}
         />
 
         <Select
           label="Status"
-          name="status"
-          value={formData.status}
+name="status_c"
+          value={formData.status_c}
           onChange={handleChange}
           options={statusOptions}
         />
@@ -117,8 +117,8 @@ const CropForm = ({ farmId, crop, onSuccess, onCancel }) => {
 
       <TextArea
         label="Notes"
-        name="notes"
-        value={formData.notes}
+name="notes_c"
+        value={formData.notes_c}
         onChange={handleChange}
         placeholder="Add any additional notes about this crop..."
         rows={3}

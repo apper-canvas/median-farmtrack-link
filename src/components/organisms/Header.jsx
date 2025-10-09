@@ -1,8 +1,14 @@
-import { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useSelector } from "react-redux";
+import { AuthContext } from "../../App";
 import ApperIcon from "@/components/ApperIcon";
 import FarmSelector from "@/components/molecules/FarmSelector";
+import Button from "@/components/atoms/Button";
 
 const Header = ({ selectedFarmId, onFarmChange }) => {
+  const { user } = useSelector((state) => state.user);
+  const { logout } = useContext(AuthContext);
+
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,10 +20,29 @@ const Header = ({ selectedFarmId, onFarmChange }) => {
             <h1 className="text-xl lg:text-2xl font-bold text-primary">FarmTrack</h1>
           </div>
           
-          <FarmSelector 
-            selectedFarmId={selectedFarmId}
-            onFarmChange={onFarmChange}
-          />
+          <div className="flex items-center gap-4">
+            <FarmSelector 
+              selectedFarmId={selectedFarmId}
+              onFarmChange={onFarmChange}
+            />
+            
+            <div className="flex items-center gap-3">
+              {user && (
+                <span className="text-sm text-gray-600 hidden lg:block">
+                  Welcome, {user.firstName || user.name || 'User'}
+                </span>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={logout}
+                className="flex items-center gap-2"
+              >
+                <ApperIcon name="LogOut" size={16} />
+                <span className="hidden lg:inline">Logout</span>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </header>

@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Card from "@/components/atoms/Card";
 import Modal from "@/components/molecules/Modal";
-import TaskForm from "@/components/organisms/TaskForm";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import TaskForm from "@/components/organisms/TaskForm";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 import taskService from "@/services/api/taskService";
 import cropService from "@/services/api/cropService";
 
@@ -109,12 +109,12 @@ const handleAdd = () => {
   };
 
   const handleToggleStatus = async (task) => {
-    const newStatus = task.status === "Completed" ? "Pending" : "Completed";
+const newStatus = task.status_c === "Completed" ? "Pending" : "Completed";
     
     try {
-      await taskService.update(task.Id, {
+await taskService.update(task.Id, {
         ...task,
-        status: newStatus,
+        status_c: newStatus,
         completedAt: newStatus === "Completed" ? Date.now() : null
       });
       toast.success(`Task marked as ${newStatus.toLowerCase()}`);
@@ -144,8 +144,8 @@ const handleAdd = () => {
   }
 
   const getCropName = (cropId) => {
-    const crop = crops.find(c => c.Id === cropId);
-    return crop ? `${crop.cropName} - ${crop.variety}` : "General Task";
+const crop = crops.find(c => c.Id === cropId);
+    return crop ? `${crop.crop_name_c} - ${crop.variety_c}` : "General Task";
   };
 
   const priorityColors = {
@@ -214,45 +214,45 @@ const handleAdd = () => {
                 <div className="flex-1 space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div className="flex items-center gap-3">
-                      <button
+<button
                         onClick={() => handleToggleStatus(task)}
                         className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
-                          task.status === "Completed"
+                          task.status_c === "Completed"
                             ? "bg-success border-success"
                             : "border-gray-300 hover:border-primary"
                         }`}
                       >
-                        {task.status === "Completed" && (
+                        {task.status_c === "Completed" && (
                           <ApperIcon name="Check" size={16} className="text-white" />
                         )}
                       </button>
                       <div>
-                        <h3 className={`font-bold text-lg ${
-                          task.status === "Completed" ? "line-through text-gray-500" : "text-gray-900"
+<h3 className={`font-bold text-lg ${
+                          task.status_c === "Completed" ? "line-through text-gray-500" : "text-gray-900"
                         }`}>
-                          {task.title}
+                          {task.title_c}
                         </h3>
-                        <p className="text-sm text-gray-500">{getCropName(task.cropId)}</p>
+<p className="text-sm text-gray-500">{getCropName(task.crop_id_c)}</p>
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant={priorityColors[task.priority]}>
-                        {task.priority}
+<Badge variant={priorityColors[task.priority_c]}>
+                        {task.priority_c}
                       </Badge>
-                      <Badge variant={statusColors[task.status]}>
-                        {task.status}
+                      <Badge variant={statusColors[task.status_c]}>
+                        {task.status_c}
                       </Badge>
                     </div>
                   </div>
 
-                  {task.description && (
-                    <p className="text-gray-600">{task.description}</p>
+{task.description_c && (
+                    <p className="text-gray-600">{task.description_c}</p>
                   )}
 
                   <div className="flex items-center gap-4 text-sm text-gray-500">
                     <div className="flex items-center gap-2">
                       <ApperIcon name="Calendar" size={16} />
-                      <span>Due: {format(new Date(task.dueDate), "MMM d, yyyy")}</span>
+<span>Due: {format(new Date(task.due_date_c), "MMM d, yyyy")}</span>
                     </div>
                   </div>
                 </div>

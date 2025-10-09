@@ -1,52 +1,170 @@
-import farmsData from "@/services/mockData/farms.json";
-
-let farms = [...farmsData];
-
-const delay = () => new Promise(resolve => setTimeout(resolve, 300));
+// Initialize ApperClient with Project ID and Public Key
+const { ApperClient } = window.ApperSDK;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 const farmService = {
   getAll: async () => {
-    await delay();
-    return [...farms];
+    try {
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "size_c"}},
+          {"field": {"Name": "unit_c"}},
+          {"field": {"Name": "location_c"}},
+          {"field": {"Name": "Tags"}}
+        ]
+      };
+      
+      const response = await apperClient.fetchRecords('farm_c', params);
+      
+      if (!response?.data?.length) {
+        return [];
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching farms:", error?.response?.data?.message || error);
+      return [];
+    }
   },
 
   getById: async (id) => {
-    await delay();
-    const farm = farms.find(f => f.Id === parseInt(id));
-    return farm ? { ...farm } : null;
+    try {
+      const params = {
+        fields: [
+          {"field": {"Name": "Name"}},
+          {"field": {"Name": "name_c"}},
+          {"field": {"Name": "size_c"}},
+          {"field": {"Name": "unit_c"}},
+          {"field": {"Name": "location_c"}},
+          {"field": {"Name": "Tags"}}
+        ]
+      };
+      
+      const response = await apperClient.getRecordById('farm_c', parseInt(id), params);
+      
+      return response?.data || null;
+    } catch (error) {
+      console.error(`Error fetching farm ${id}:`, error?.response?.data?.message || error);
+      return null;
+    }
   },
 
   create: async (farm) => {
-    await delay();
-    const maxId = farms.length > 0 ? Math.max(...farms.map(f => f.Id)) : 0;
-    const newFarm = {
-      Id: maxId + 1,
-      ...farm,
-      createdAt: Date.now()
-    };
-    farms.push(newFarm);
-    return { ...newFarm };
+    try {
+      // Only include Updateable fields for create operation
+      const params = {
+        records: [{
+          Name: farm.Name || farm.name_c,
+          name_c: farm.name_c,
+          size_c: farm.size_c ? parseFloat(farm.size_c) : null,
+          unit_c: farm.unit_c,
+          location_c: farm.location_c,
+          Tags: farm.Tags || ""
+        }]
+      };
+      
+      const response = await apperClient.createRecord('farm_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to create ${failed.length} records:`, failed);
+          failed.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        return successful.length > 0 ? successful[0].data : null;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error creating farm:", error?.response?.data?.message || error);
+      throw error;
+    }
   },
 
   update: async (id, data) => {
-    await delay();
-    const index = farms.findIndex(f => f.Id === parseInt(id));
-    if (index !== -1) {
-      farms[index] = { ...farms[index], ...data };
-      return { ...farms[index] };
+    try {
+      // Only include Updateable fields for update operation
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: data.Name || data.name_c,
+          name_c: data.name_c,
+          size_c: data.size_c ? parseFloat(data.size_c) : null,
+          unit_c: data.unit_c,
+          location_c: data.location_c,
+          Tags: data.Tags || ""
+        }]
+      };
+      
+      const response = await apperClient.updateRecord('farm_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to update ${failed.length} records:`, failed);
+          failed.forEach(record => {
+            if (record.message) throw new Error(record.message);
+          });
+        }
+        return successful.length > 0 ? successful[0].data : null;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error updating farm:", error?.response?.data?.message || error);
+      throw error;
     }
-    return null;
   },
 
   delete: async (id) => {
-    await delay();
-    const index = farms.findIndex(f => f.Id === parseInt(id));
-    if (index !== -1) {
-      farms.splice(index, 1);
+    try {
+      const params = { 
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await apperClient.deleteRecord('farm_c', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        return false;
+      }
+      
+      if (response.results) {
+        const successful = response.results.filter(r => r.success);
+        const failed = response.results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+          console.error(`Failed to delete ${failed.length} records:`, failed);
+        }
+        return successful.length > 0;
+      }
       return true;
+    } catch (error) {
+      console.error("Error deleting farm:", error?.response?.data?.message || error);
+      return false;
     }
-    return false;
   }
 };
+
+export default farmService;
 
 export default farmService;

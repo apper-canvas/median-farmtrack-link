@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ApperIcon from "@/components/ApperIcon";
 import farmService from "@/services/api/farmService";
 
@@ -15,7 +15,7 @@ const FarmSelector = ({ selectedFarmId, onFarmChange }) => {
       const data = await farmService.getAll();
       setFarms(data);
       if (data.length > 0 && !selectedFarmId) {
-        onFarmChange(data[0].Id);
+onFarmChange(data[0].Id);
       }
     } catch (error) {
       console.error("Error loading farms:", error);
@@ -32,7 +32,7 @@ const FarmSelector = ({ selectedFarmId, onFarmChange }) => {
       >
         <ApperIcon name="Map" size={20} className="text-primary" />
         <span className="font-medium text-gray-900">
-          {selectedFarm ? selectedFarm.name : "Select Farm"}
+{selectedFarm ? selectedFarm.name_c : "Select Farm"}
         </span>
         <ApperIcon name="ChevronDown" size={20} className="text-gray-500" />
       </button>
@@ -60,9 +60,9 @@ const FarmSelector = ({ selectedFarmId, onFarmChange }) => {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-medium">{farm.name}</p>
+<p className="font-medium">{farm.name_c}</p>
                       <p className="text-sm text-gray-500">
-                        {farm.size} {farm.unit}
+                        {farm.size_c} {farm.unit_c}
                       </p>
                     </div>
                     {farm.Id === selectedFarmId && (

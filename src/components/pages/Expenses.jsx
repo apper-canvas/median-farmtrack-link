@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import Chart from "react-apexcharts";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Card from "@/components/atoms/Card";
 import Modal from "@/components/molecules/Modal";
-import ExpenseForm from "@/components/organisms/ExpenseForm";
-import BudgetForm from "@/components/organisms/BudgetForm";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import BudgetForm from "@/components/organisms/BudgetForm";
+import ExpenseForm from "@/components/organisms/ExpenseForm";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 import expenseService from "@/services/api/expenseService";
 const Expenses = () => {
   const { selectedFarmId } = useOutletContext();
@@ -70,7 +70,7 @@ const loadExpenses = async () => {
     }
   };
 
-  const handleAdd = () => {
+const handleAdd = () => {
     setSelectedExpense(null);
     setIsModalOpen(true);
   };
@@ -79,7 +79,6 @@ const loadExpenses = async () => {
     setSelectedExpense(expense);
     setIsModalOpen(true);
   };
-
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {
       try {
@@ -117,7 +116,7 @@ const handleSuccess = () => {
   }
 
 const categoryTotals = expenses.reduce((acc, expense) => {
-    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+    acc[expense.category_c] = (acc[expense.category_c] || 0) + expense.amount_c;
     return acc;
   }, {});
 
@@ -174,7 +173,7 @@ const categoryTotals = expenses.reduce((acc, expense) => {
 
   const chartSeries = Object.values(categoryTotals);
 
-  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+const totalExpenses = expenses.reduce((sum, e) => sum + e.amount_c, 0);
 
   const categoryColors = {
     Seeds: "success",
@@ -304,17 +303,17 @@ const categoryTotals = expenses.reduce((acc, expense) => {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-lg text-gray-900">
-                        ${expense.amount.toFixed(2)}
+<h3 className="font-bold text-lg text-gray-900">
+                        ${expense.amount_c.toFixed(2)}
                       </h3>
-                      <Badge variant={categoryColors[expense.category]}>
-                        {expense.category}
+                      <Badge variant={categoryColors[expense.category_c]}>
+                        {expense.category_c}
                       </Badge>
                     </div>
-                    <p className="text-gray-600 mb-2">{expense.description}</p>
+<p className="text-gray-600 mb-2">{expense.description_c}</p>
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                       <ApperIcon name="Calendar" size={16} />
-                      <span>{format(new Date(expense.date), "MMM d, yyyy")}</span>
+                      <span>{format(new Date(expense.date_c), "MMM d, yyyy")}</span>
                     </div>
                   </div>
                 </div>
