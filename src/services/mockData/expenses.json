@@ -1,0 +1,92 @@
+[
+  {
+    "Id": 1,
+    "farmId": 1,
+    "category": "Seeds",
+    "amount": 850.00,
+    "date": "2024-03-10",
+    "description": "Corn seed purchase - 50 bags",
+    "createdAt": 1710086400000
+  },
+  {
+    "Id": 2,
+    "farmId": 1,
+    "category": "Fertilizer",
+    "amount": 1250.00,
+    "date": "2024-03-15",
+    "description": "Nitrogen fertilizer - 25 bags",
+    "createdAt": 1710518400000
+  },
+  {
+    "Id": 3,
+    "farmId": 2,
+    "category": "Seeds",
+    "amount": 620.00,
+    "date": "2024-03-18",
+    "description": "Soybean seeds - 30 bags",
+    "createdAt": 1710777600000
+  },
+  {
+    "Id": 4,
+    "farmId": 1,
+    "category": "Equipment",
+    "amount": 350.00,
+    "date": "2024-04-01",
+    "description": "Irrigation system repair parts",
+    "createdAt": 1711987200000
+  },
+  {
+    "Id": 5,
+    "farmId": 2,
+    "category": "Labor",
+    "amount": 1800.00,
+    "date": "2024-04-05",
+    "description": "Planting assistance - 3 workers for 2 days",
+    "createdAt": 1712332800000
+  },
+  {
+    "Id": 6,
+    "farmId": 3,
+    "category": "Seeds",
+    "amount": 180.00,
+    "date": "2024-03-25",
+    "description": "Lettuce and carrot seeds",
+    "createdAt": 1711382400000
+  },
+  {
+    "Id": 7,
+    "farmId": 2,
+    "category": "Equipment",
+    "amount": 75.00,
+    "date": "2024-04-10",
+    "description": "Tomato stakes and ties",
+    "createdAt": 1712764800000
+  },
+  {
+    "Id": 8,
+    "farmId": 1,
+    "category": "Fertilizer",
+    "amount": 425.00,
+    "date": "2024-04-12",
+    "description": "Phosphorus supplement",
+    "createdAt": 1712937600000
+  },
+  {
+    "Id": 9,
+    "farmId": 3,
+    "category": "Labor",
+    "amount": 600.00,
+    "date": "2024-04-08",
+    "description": "Harvesting assistance",
+    "createdAt": 1712592000000
+  },
+  {
+    "Id": 10,
+    "farmId": 2,
+    "category": "Fertilizer",
+    "amount": 380.00,
+    "date": "2024-04-15",
+    "description": "Organic compost - 10 bags",
+    "createdAt": 1713196800000
+  }
+]

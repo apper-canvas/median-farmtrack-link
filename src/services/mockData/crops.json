@@ -1,0 +1,68 @@
+[
+  {
+    "Id": 1,
+    "farmId": 1,
+    "cropName": "Corn",
+    "variety": "Sweet Golden",
+    "plantingDate": "2024-03-15",
+    "expectedHarvestDate": "2024-07-20",
+    "growthStage": "Growing",
+    "status": "Active",
+    "notes": "Irrigation scheduled every 3 days"
+  },
+  {
+    "Id": 2,
+    "farmId": 1,
+    "cropName": "Wheat",
+    "variety": "Spring Hard Red",
+    "plantingDate": "2024-04-01",
+    "expectedHarvestDate": "2024-08-15",
+    "growthStage": "Planted",
+    "status": "Active",
+    "notes": "Fertilizer applied on planting day"
+  },
+  {
+    "Id": 3,
+    "farmId": 2,
+    "cropName": "Soybeans",
+    "variety": "Early Maturity",
+    "plantingDate": "2024-03-20",
+    "expectedHarvestDate": "2024-09-01",
+    "growthStage": "Growing",
+    "status": "Active",
+    "notes": "Good soil conditions, monitor for pests"
+  },
+  {
+    "Id": 4,
+    "farmId": 2,
+    "cropName": "Tomatoes",
+    "variety": "Beefsteak",
+    "plantingDate": "2024-04-10",
+    "expectedHarvestDate": "2024-07-01",
+    "growthStage": "Planted",
+    "status": "Active",
+    "notes": "Staking required in 2 weeks"
+  },
+  {
+    "Id": 5,
+    "farmId": 3,
+    "cropName": "Lettuce",
+    "variety": "Romaine",
+    "plantingDate": "2024-02-01",
+    "expectedHarvestDate": "2024-04-15",
+    "growthStage": "Ready",
+    "status": "Active",
+    "notes": "Ready for harvest within 1 week"
+  },
+  {
+    "Id": 6,
+    "farmId": 3,
+    "cropName": "Carrots",
+    "variety": "Nantes",
+    "plantingDate": "2024-01-15",
+    "expectedHarvestDate": "2024-04-01",
+    "growthStage": "Harvested",
+    "status": "Completed",
+    "notes": "Excellent yield, 500kg harvested"
+  }
+]

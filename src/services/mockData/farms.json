@@ -1,0 +1,26 @@
+[
+  {
+    "Id": 1,
+    "name": "North Field",
+    "size": 25,
+    "unit": "acres",
+    "location": "Northern Section",
+    "createdAt": 1704067200000
+  },
+  {
+    "Id": 2,
+    "name": "South Valley",
+    "size": 40,
+    "unit": "acres",
+    "location": "Southern Valley",
+    "createdAt": 1704153600000
+  },
+  {
+    "Id": 3,
+    "name": "East Garden",
+    "size": 15,
+    "unit": "acres",
+    "location": "Eastern Plot",
+    "createdAt": 1704240000000
+  }
+]

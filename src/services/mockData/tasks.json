@@ -1,0 +1,86 @@
+[
+  {
+    "Id": 1,
+    "farmId": 1,
+    "cropId": 1,
+    "title": "Water corn field",
+    "description": "Deep watering for corn rows 1-10",
+    "dueDate": "2024-04-25",
+    "priority": "High",
+    "status": "Pending",
+    "createdAt": 1713916800000,
+    "completedAt": null
+  },
+  {
+    "Id": 2,
+    "farmId": 1,
+    "cropId": 2,
+    "title": "Apply herbicide to wheat",
+    "description": "Spot treatment for weeds in sections A-C",
+    "dueDate": "2024-04-28",
+    "priority": "Medium",
+    "status": "Pending",
+    "createdAt": 1713916800000,
+    "completedAt": null
+  },
+  {
+    "Id": 3,
+    "farmId": 2,
+    "cropId": 3,
+    "title": "Inspect soybeans for pests",
+    "description": "Check for aphids and other common pests",
+    "dueDate": "2024-04-26",
+    "priority": "High",
+    "status": "In Progress",
+    "createdAt": 1713830400000,
+    "completedAt": null
+  },
+  {
+    "Id": 4,
+    "farmId": 2,
+    "cropId": 4,
+    "title": "Install tomato stakes",
+    "description": "Set up support stakes for all tomato plants",
+    "dueDate": "2024-05-01",
+    "priority": "Medium",
+    "status": "Pending",
+    "createdAt": 1713744000000,
+    "completedAt": null
+  },
+  {
+    "Id": 5,
+    "farmId": 3,
+    "cropId": 5,
+    "title": "Harvest lettuce",
+    "description": "Harvest rows 1-5 of romaine lettuce",
+    "dueDate": "2024-04-20",
+    "priority": "High",
+    "status": "Pending",
+    "createdAt": 1713657600000,
+    "completedAt": null
+  },
+  {
+    "Id": 6,
+    "farmId": 1,
+    "cropId": 1,
+    "title": "Fertilize corn",
+    "description": "Apply nitrogen fertilizer",
+    "dueDate": "2024-04-15",
+    "priority": "Medium",
+    "status": "Completed",
+    "createdAt": 1713571200000,
+    "completedAt": 1713571200000
+  },
+  {
+    "Id": 7,
+    "farmId": 3,
+    "cropId": 6,
+    "title": "Prepare soil for new planting",
+    "description": "Till and prepare East Garden plot",
+    "dueDate": "2024-04-30",
+    "priority": "Low",
+    "status": "Pending",
+    "createdAt": 1713484800000,
+    "completedAt": null
+  }
+]
