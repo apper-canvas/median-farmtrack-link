@@ -145,7 +145,7 @@ function AppContent() {
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="farms" element={<Farms />} />
-          <Route path="crops" element={<Crops />} />
+<Route path="crops" element={<Crops />} />
           <Route path="tasks" element={<Tasks />} />
           <Route path="expenses" element={<Expenses />} />
           <Route path="weather" element={<Weather />} />

@@ -7,7 +7,7 @@ const apperClient = new ApperClient({
 
 const cropService = {
   getAll: async () => {
-    try {
+try {
       const params = {
         fields: [
           {"field": {"Name": "Name"}},
@@ -19,6 +19,7 @@ const cropService = {
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "notes_c"}},
           {"field": {"Name": "farm_id_c"}},
+          {"field": {"Name": "crop_yield_c_id_c"}},
           {"field": {"Name": "Tags"}}
         ]
       };
@@ -40,7 +41,7 @@ const cropService = {
     try {
       const params = {
         fields: [
-          {"field": {"Name": "Name"}},
+{"field": {"Name": "Name"}},
           {"field": {"Name": "crop_name_c"}},
           {"field": {"Name": "variety_c"}},
           {"field": {"Name": "planting_date_c"}},
@@ -49,6 +50,7 @@ const cropService = {
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "notes_c"}},
           {"field": {"Name": "farm_id_c"}},
+          {"field": {"Name": "crop_yield_c_id_c"}},
           {"field": {"Name": "Tags"}}
         ]
       };
@@ -65,7 +67,7 @@ const cropService = {
   getByFarmId: async (farmId) => {
     try {
       const params = {
-        fields: [
+fields: [
           {"field": {"Name": "Name"}},
           {"field": {"Name": "crop_name_c"}},
           {"field": {"Name": "variety_c"}},
@@ -75,6 +77,7 @@ const cropService = {
           {"field": {"Name": "status_c"}},
           {"field": {"Name": "notes_c"}},
           {"field": {"Name": "farm_id_c"}},
+          {"field": {"Name": "crop_yield_c_id_c"}},
           {"field": {"Name": "Tags"}}
         ],
         where: [{"FieldName": "farm_id_c", "Operator": "EqualTo", "Values": [parseInt(farmId)]}]
@@ -96,7 +99,7 @@ const cropService = {
   create: async (crop) => {
     try {
       // Only include Updateable fields for create operation
-      const params = {
+const params = {
         records: [{
           Name: crop.Name || crop.crop_name_c,
           crop_name_c: crop.crop_name_c,
@@ -107,6 +110,7 @@ const cropService = {
           status_c: crop.status_c,
           notes_c: crop.notes_c,
           farm_id_c: parseInt(crop.farm_id_c),
+          crop_yield_c_id_c: crop.crop_yield_c_id_c ? parseInt(crop.crop_yield_c_id_c) : null,
           Tags: crop.Tags || ""
         }]
       };
@@ -143,7 +147,7 @@ const cropService = {
       const params = {
         records: [{
           Id: parseInt(id),
-          Name: data.Name || data.crop_name_c,
+Name: data.Name || data.crop_name_c,
           crop_name_c: data.crop_name_c,
           variety_c: data.variety_c,
           planting_date_c: data.planting_date_c,
@@ -152,6 +156,7 @@ const cropService = {
           status_c: data.status_c,
           notes_c: data.notes_c,
           farm_id_c: data.farm_id_c ? parseInt(data.farm_id_c) : null,
+          crop_yield_c_id_c: data.crop_yield_c_id_c ? parseInt(data.crop_yield_c_id_c) : null,
           Tags: data.Tags || ""
         }]
       };

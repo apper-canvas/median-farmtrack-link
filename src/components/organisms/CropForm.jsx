@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Input from "@/components/atoms/Input";
 import Select from "@/components/atoms/Select";
 import TextArea from "@/components/atoms/TextArea";
 import Button from "@/components/atoms/Button";
 import cropService from "@/services/api/cropService";
+import cropYieldService from "@/services/api/cropYieldService";
 
 const CropForm = ({ farmId, crop, onSuccess, onCancel }) => {
 const [formData, setFormData] = useState({
@@ -14,10 +15,32 @@ const [formData, setFormData] = useState({
     expected_harvest_date_c: crop?.expected_harvest_date_c || "",
     growth_stage_c: crop?.growth_stage_c || "Planted",
     status_c: crop?.status_c || "Active",
-    notes_c: crop?.notes_c || ""
+    notes_c: crop?.notes_c || "",
+    crop_yield_c_id_c: crop?.crop_yield_c_id_c || ""
   });
+  const [availableYields, setAvailableYields] = useState([]);
+  const [loadingYields, setLoadingYields] = useState(false);
 
   const [loading, setLoading] = useState(false);
+
+useEffect(() => {
+    loadYields();
+  }, []);
+
+  const loadYields = async () => {
+    setLoadingYields(true);
+    try {
+      const yields = await cropYieldService.getAll();
+      setAvailableYields(yields.map(y => ({
+        value: y.Id,
+        label: `${y.crop_name_c} - ${y.yield_amount_c} ${y.yield_unit_c} (${y.harvest_date_c})`
+      })));
+    } catch (error) {
+      console.error("Error loading yields:", error);
+    } finally {
+      setLoadingYields(false);
+    }
+  };
 
   const growthStages = [
     { value: "Planted", label: "Planted" },
@@ -36,11 +59,11 @@ const [formData, setFormData] = useState({
     setLoading(true);
 
     try {
-      if (crop) {
+if (crop) {
         await cropService.update(crop.Id, formData);
         toast.success("Crop updated successfully!");
       } else {
-await cropService.create({ ...formData, farm_id_c: farmId });
+        await cropService.create({ ...formData, farm_id_c: farmId });
         toast.success("Crop added successfully!");
       }
       onSuccess();
@@ -61,10 +84,10 @@ await cropService.create({ ...formData, farm_id_c: farmId });
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
           label="Crop Name"
-name="crop_name_c"
+          name="crop_name_c"
           value={formData.crop_name_c}
           onChange={handleChange}
           placeholder="e.g., Corn, Wheat, Tomatoes"
@@ -73,7 +96,7 @@ name="crop_name_c"
 
         <Input
           label="Variety"
-name="variety_c"
+          name="variety_c"
           value={formData.variety_c}
           onChange={handleChange}
           placeholder="e.g., Sweet Golden"
@@ -82,7 +105,7 @@ name="variety_c"
 
         <Input
           label="Planting Date"
-name="planting_date_c"
+          name="planting_date_c"
           type="date"
           value={formData.planting_date_c}
           onChange={handleChange}
@@ -91,7 +114,7 @@ name="planting_date_c"
 
         <Input
           label="Expected Harvest Date"
-name="expected_harvest_date_c"
+          name="expected_harvest_date_c"
           type="date"
           value={formData.expected_harvest_date_c}
           onChange={handleChange}
@@ -100,7 +123,7 @@ name="expected_harvest_date_c"
 
         <Select
           label="Growth Stage"
-name="growth_stage_c"
+          name="growth_stage_c"
           value={formData.growth_stage_c}
           onChange={handleChange}
           options={growthStages}
@@ -108,10 +131,22 @@ name="growth_stage_c"
 
         <Select
           label="Status"
-name="status_c"
+          name="status_c"
           value={formData.status_c}
           onChange={handleChange}
           options={statusOptions}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6">
+        <Select
+          label="Associated Yield Record (Optional)"
+          name="crop_yield_c_id_c"
+          value={formData.crop_yield_c_id_c}
+          onChange={handleChange}
+          options={availableYields}
+          placeholder={loadingYields ? "Loading yields..." : "Select a yield record"}
+          disabled={loadingYields}
         />
       </div>
 

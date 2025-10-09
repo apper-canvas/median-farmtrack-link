@@ -1,29 +1,35 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { format, differenceInDays } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { toast } from "react-toastify";
+import YieldForm from "@/components/organisms/YieldForm";
+import YieldAnalytics from "@/components/molecules/YieldAnalytics";
+import cropYieldService from "@/services/api/cropYieldService";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Card from "@/components/atoms/Card";
 import Modal from "@/components/molecules/Modal";
-import CropForm from "@/components/organisms/CropForm";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import CropForm from "@/components/organisms/CropForm";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
 import cropService from "@/services/api/cropService";
 
 const Crops = () => {
   const { selectedFarmId } = useOutletContext();
   
   const [crops, setCrops] = useState([]);
-  const [filteredCrops, setFilteredCrops] = useState([]);
+const [filteredCrops, setFilteredCrops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCrop, setSelectedCrop] = useState(null);
   const [filterStage, setFilterStage] = useState("All");
-
+  const [activeTab, setActiveTab] = useState("crops");
+  const [isYieldModalOpen, setIsYieldModalOpen] = useState(false);
+  const [selectedYieldRecord, setSelectedYieldRecord] = useState(null);
+  const [cropYields, setCropYields] = useState([]);
   useEffect(() => {
     if (selectedFarmId) {
       loadCrops();
@@ -43,12 +49,15 @@ const Crops = () => {
   const loadCrops = async () => {
     setLoading(true);
     setError("");
-
-    try {
-      const data = await cropService.getByFarmId(selectedFarmId);
-      setCrops(data);
+try {
+      const [cropsData, yieldsData] = await Promise.all([
+        cropService.getByFarmId(selectedFarmId),
+        cropYieldService.getAll()
+      ]);
+      setCrops(cropsData);
+      setCropYields(yieldsData);
     } catch (error) {
-      setError("Failed to load crops");
+      setError("Failed to load crops and yield data");
       console.error(error);
     } finally {
       setLoading(false);
@@ -78,15 +87,48 @@ const Crops = () => {
     }
   };
 
-  const handleSuccess = () => {
+const handleSuccess = () => {
     setIsModalOpen(false);
     loadCrops();
   };
 
+  const handleAddYield = () => {
+    setSelectedYieldRecord(null);
+    setIsYieldModalOpen(true);
+  };
+
+  const handleEditYield = (yieldRecord) => {
+    setSelectedYieldRecord(yieldRecord);
+    setIsYieldModalOpen(true);
+  };
+
+  const handleYieldSuccess = () => {
+    setIsYieldModalOpen(false);
+    setSelectedYieldRecord(null);
+    loadCrops();
+  };
+
+  const handleDeleteYield = async (id) => {
+    if (!confirm("Are you sure you want to delete this yield record?")) return;
+    
+    try {
+      await cropYieldService.delete(id);
+      toast.success("Yield record deleted successfully!");
+      loadCrops();
+    } catch (error) {
+      toast.error("Failed to delete yield record");
+      console.error(error);
+    }
+  };
+};
+
+  const getCropYieldData = (cropName) => {
+    return cropYields.filter(yieldRecord => yieldRecord.crop_name_c === cropName);
+  };
   if (loading) return <Loading text="Loading crops..." />;
   if (error) return <Error message={error} onRetry={loadCrops} />;
   
-  if (!selectedFarmId) {
+if (!selectedFarmId) {
     return (
       <Empty
         icon="Map"
@@ -103,14 +145,55 @@ const Crops = () => {
     Harvested: "default"
   };
 
-  return (
+return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold text-gray-900">Crops</h1>
-        <Button onClick={handleAdd}>
-          <ApperIcon name="Plus" size={20} />
-          Add Crop
-        </Button>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Crops & Yields</h1>
+          <p className="text-gray-600 mt-1">Manage your crops and track yield performance</p>
+        </div>
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={handleAddYield}>
+            <ApperIcon name="BarChart" size={20} />
+            Add Yield Record
+          </Button>
+          <Button onClick={handleAdd}>
+            <ApperIcon name="Plus" size={20} />
+            Add Crop
+          </Button>
+        </div>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="border-b border-gray-200">
+        <nav className="flex gap-8">
+          <button
+            onClick={() => setActiveTab("crops")}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === "crops"
+                ? "border-primary text-primary"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <ApperIcon name="Sprout" size={16} />
+              Crops ({filteredCrops.length})
+            </div>
+          </button>
+          <button
+            onClick={() => setActiveTab("analytics")}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === "analytics"
+                ? "border-primary text-primary"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <ApperIcon name="TrendingUp" size={16} />
+              Yield Analytics
+            </div>
+          </button>
+        </nav>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -141,11 +224,16 @@ const Crops = () => {
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-{filteredCrops.map((crop) => {
+{/* Tab Content */}
+      {activeTab === "crops" && (
+        <div>
+          {filteredCrops.map((crop) => {
             const daysUntilHarvest = differenceInDays(
               new Date(crop.expected_harvest_date_c),
               new Date()
             );
+            const yieldData = getCropYieldData(crop.crop_name_c);
+            const latestYield = yieldData.length > 0 ? yieldData[0] : null;
 
             return (
               <Card key={crop.Id} hover>
@@ -156,39 +244,54 @@ const Crops = () => {
                         <ApperIcon name="Sprout" size={24} className="text-success" />
                       </div>
                       <div>
-<h3 className="font-bold text-gray-900 text-lg">{crop.crop_name_c}</h3>
+                        <h3 className="font-bold text-gray-900 text-lg">{crop.crop_name_c}</h3>
                         <p className="text-sm text-gray-500">{crop.variety_c}</p>
                       </div>
                     </div>
-<Badge variant={stageColors[crop.growth_stage_c]}>
-                      {crop.growth_stage_c}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={stageColors[crop.growth_stage_c]}>
+                        {crop.growth_stage_c}
+                      </Badge>
+                      {yieldData.length > 0 && (
+                        <Badge variant="info">
+                          {yieldData.length} yield records
+                        </Badge>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="text-sm">
                       <span className="text-gray-600">Planted</span>
-<span className="font-medium text-gray-900">
+                      <p className="font-medium text-gray-900">
                         {format(new Date(crop.planting_date_c), "MMM d, yyyy")}
-                      </span>
+                      </p>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="text-sm">
                       <span className="text-gray-600">Expected Harvest</span>
-<span className="font-medium text-gray-900">
+                      <p className="font-medium text-gray-900">
                         {format(new Date(crop.expected_harvest_date_c), "MMM d, yyyy")}
-                      </span>
+                      </p>
                     </div>
-{daysUntilHarvest > 0 && crop.status_c === "Active" && (
-                      <div className="flex items-center justify-between text-sm">
+                    {daysUntilHarvest > 0 && crop.status_c === "Active" && (
+                      <div className="text-sm">
                         <span className="text-gray-600">Days Until Harvest</span>
-                        <span className="font-bold text-primary">
+                        <p className="font-bold text-primary">
                           {daysUntilHarvest} days
-                        </span>
+                        </p>
+                      </div>
+                    )}
+                    {latestYield && (
+                      <div className="text-sm">
+                        <span className="text-gray-600">Latest Yield</span>
+                        <p className="font-medium text-success">
+                          {latestYield.yield_amount_c} {latestYield.yield_unit_c}
+                        </p>
                       </div>
                     )}
                   </div>
 
-{crop.notes_c && (
+                  {crop.notes_c && (
                     <p className="text-sm text-gray-600 bg-surface p-3 rounded-lg">
                       {crop.notes_c}
                     </p>
@@ -202,7 +305,16 @@ const Crops = () => {
                       className="flex-1"
                     >
                       <ApperIcon name="Edit" size={16} />
-                      Edit
+                      Edit Crop
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={handleAddYield}
+                      className="flex-1"
+                    >
+                      <ApperIcon name="BarChart" size={16} />
+                      Add Yield
                     </Button>
                     <Button
                       size="sm"
@@ -220,7 +332,13 @@ const Crops = () => {
         </div>
       )}
 
-      <Modal
+      {activeTab === "analytics" && (
+        <YieldAnalytics />
+      )}
+          })}
+        </div>
+      )}
+<Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={selectedCrop ? "Edit Crop" : "Add New Crop"}
@@ -230,6 +348,18 @@ const Crops = () => {
           crop={selectedCrop}
           onSuccess={handleSuccess}
           onCancel={() => setIsModalOpen(false)}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={isYieldModalOpen}
+        onClose={() => setIsYieldModalOpen(false)}
+        title={selectedYieldRecord ? "Edit Yield Record" : "Add New Yield Record"}
+      >
+        <YieldForm
+          yieldRecord={selectedYieldRecord}
+          onSuccess={handleYieldSuccess}
+          onCancel={() => setIsYieldModalOpen(false)}
         />
       </Modal>
     </div>
