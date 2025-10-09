@@ -76,11 +76,18 @@ const [formData, setFormData] = useState({
     }
   };
 
-  const unitOptions = [
+const unitOptions = [
     { value: "acres", label: "Acres" },
     { value: "hectares", label: "Hectares" },
     { value: "square_feet", label: "Square Feet" },
     { value: "square_meters", label: "Square Meters" }
+  ];
+
+  const soilTypeOptions = [
+    { value: "sandy", label: "Sandy Soil" },
+    { value: "silty", label: "Silty Soil" },
+    { value: "clay", label: "Clay Soil" },
+    { value: "loamy", label: "Loamy Soil" }
   ];
 
   return (
@@ -120,12 +127,13 @@ const [formData, setFormData] = useState({
         onChange={(e) => handleInputChange("location_c", e.target.value)}
         placeholder="Enter farm location"
       />
-<Input
+<Select
         label="Soil Type"
         value={formData.soil_type_c}
-        onChange={(e) => handleInputChange("soil_type_c", e.target.value)}
-        placeholder="e.g., Clay, Sandy, Loam, Silt"
-        helpText="Describe the primary soil type for this farm"
+        onChange={(value) => handleInputChange("soil_type_c", value)}
+        options={soilTypeOptions}
+        placeholder="Select soil type"
+        helpText="Choose the primary soil type for this farm"
       />
 
       <Input
