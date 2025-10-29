@@ -15,7 +15,7 @@ const FarmSelector = ({ selectedFarmId, onFarmChange }) => {
 const data = await farmService.getAll();
       setFarms(data);
       if (data.length > 0 && !selectedFarmId) {
-        onFarmChange(data[0]);
+        onFarmChange(data[0].Id);
       }
     } catch (error) {
       console.error("Error loading farms:", error);
@@ -45,11 +45,11 @@ const data = await farmService.getAll();
           />
           <div className="absolute top-full left-0 mt-2 w-64 bg-white border-2 border-gray-200 rounded-lg shadow-lg z-20">
             <div className="p-2">
-              {farms.map((farm) => (
+{farms.map((farm) => (
 <button
                   key={farm.Id}
                   onClick={() => {
-                    onFarmChange(farm);
+                    onFarmChange(farm.Id);
                     setIsOpen(false);
                   }}
                   className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 ${
