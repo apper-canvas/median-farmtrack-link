@@ -26,5 +26,5 @@ setUser: (state, action) => {
   },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser, clearUser, setInitialized } = userSlice.actions;
 export default userSlice.reducer;
