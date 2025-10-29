@@ -97,32 +97,32 @@ if (!selectedFarm?.Id) {
   return (
     <div className="p-4 lg:p-6 pb-20 lg:pb-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Labor Records</h1>
           <p className="text-gray-600 mt-1">Track employee work hours and tasks</p>
         </div>
-        <Button
+        <button
           onClick={handleAdd}
-          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ApperIcon name="Plus" size={20} />
           <span>Add Labor</span>
-        </Button>
+        </button>
       </div>
 
       {/* Labor List */}
-      {labors.length === 0 ? (
+{labors.length === 0 ? (
         <Empty
           message="No labor records found"
           action={
-            <Button
+            <button
               onClick={handleAdd}
-              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <ApperIcon name="Plus" size={20} />
               <span>Add Labor Record</span>
-            </Button>
+            </button>
           }
         />
       ) : (
