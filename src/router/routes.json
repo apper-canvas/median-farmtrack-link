@@ -179,18 +179,5 @@
       },
       "redirectOnDeny": "/login"
     }
-},
-  "/labors": {
-    "allow": {
-      "when": {
-        "conditions": [
-          {
-            "label": "User must be logged in to view labors",
-            "rule": "authenticated"
-          }
-        ]
-      },
-      "redirectOnDeny": "/login"
-    }
-  }
+}
 }

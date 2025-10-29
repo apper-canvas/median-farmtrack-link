@@ -18,7 +18,6 @@ const Equipments = lazy(() => import("@/components/pages/Equipments"));
 const Tasks = lazy(() => import("@/components/pages/Tasks"));
 const Expenses = lazy(() => import("@/components/pages/Expenses"));
 const Weather = lazy(() => import("@/components/pages/Weather"));
-const Labors = lazy(() => import("@/components/pages/Labors"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
 
 const createRoute = ({
@@ -86,7 +85,6 @@ export const router = createBrowserRouter([
           createRoute({ path: "tasks", element: <Tasks /> }),
           createRoute({ path: "expenses", element: <Expenses /> }),
 createRoute({ path: "weather", element: <Weather /> }),
-          createRoute({ path: "labors", element: <Labors /> }),
         ],
       },
       createRoute({ path: "*", element: <NotFound /> }),
