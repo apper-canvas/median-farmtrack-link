@@ -7,12 +7,13 @@ import Button from "@/components/atoms/Button";
 import equipmentService from "@/services/api/equipmentService";
 
 const EquipmentForm = ({ equipment, onSuccess, onCancel }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name_c: equipment?.name_c || "",
     description_c: equipment?.description_c || "",
     type_c: equipment?.type_c || "Tractor",
     purchase_date_c: equipment?.purchase_date_c || "",
     price_c: equipment?.price_c || "",
+    current_cost_c: equipment?.current_cost_c || "",
     is_active_c: equipment?.is_active_c !== undefined ? equipment.is_active_c : true,
     Tags: equipment?.Tags || ""
   });
@@ -38,9 +39,10 @@ const EquipmentForm = ({ equipment, onSuccess, onCancel }) => {
     setLoading(true);
 
     try {
-      const equipmentData = {
+const equipmentData = {
         ...formData,
-        price_c: formData.price_c ? parseFloat(formData.price_c) : null
+        price_c: formData.price_c ? parseFloat(formData.price_c) : null,
+        current_cost_c: formData.current_cost_c ? parseFloat(formData.current_cost_c) : null
       };
 
       if (equipment) {
@@ -124,7 +126,20 @@ const EquipmentForm = ({ equipment, onSuccess, onCancel }) => {
           placeholder="0.00"
         />
       </div>
-
+<div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Current Cost
+          </label>
+          <Input
+            type="number"
+            step="0.01"
+            value={formData.current_cost_c}
+            onChange={(e) =>
+              setFormData({ ...formData, current_cost_c: e.target.value })
+            }
+            placeholder="Enter current cost"
+          />
+        </div>
       <Input
         label="Tags"
         name="Tags"
