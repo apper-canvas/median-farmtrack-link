@@ -9,6 +9,7 @@ const navItems = [
     { path: "/equipment", icon: "Truck", label: "Equipment" },
     { path: "/tasks", icon: "ClipboardList", label: "Tasks" },
     { path: "/expenses", icon: "DollarSign", label: "Expenses" },
+    { path: "/labors", icon: "Users", label: "Labors" },
     { path: "/weather", icon: "CloudSun", label: "Weather" }
   ];
 

@@ -148,12 +148,25 @@
       "redirectOnDeny": "/login"
     }
   },
-  "/expenses": {
+"/expenses": {
     "allow": {
       "when": {
         "conditions": [
           {
             "label": "User must be logged in to view expenses",
+            "rule": "authenticated"
+          }
+        ]
+      },
+      "redirectOnDeny": "/login"
+    }
+  },
+  "/labors": {
+    "allow": {
+      "when": {
+        "conditions": [
+          {
+            "label": "User must be logged in to view labor records",
             "rule": "authenticated"
           }
         ]

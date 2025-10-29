@@ -17,9 +17,9 @@ const Equipments = lazy(() => import("@/components/pages/Equipments"));
 const Tasks = lazy(() => import("@/components/pages/Tasks"));
 const Expenses = lazy(() => import("@/components/pages/Expenses"));
 const Weather = lazy(() => import("@/components/pages/Weather"));
+const Labors = lazy(() => import("@/components/pages/Labors"));
 const NotFound = lazy(() => import("@/components/pages/NotFound"));
 const Layout = lazy(() => import("@/components/organisms/Layout"));
-
 // Loading fallback component
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-green-100">
@@ -80,9 +80,10 @@ export const router = createBrowserRouter([
           createRoute({ path: "dashboard", element: <Dashboard /> }),
           createRoute({ path: "farms", element: <Farms /> }),
           createRoute({ path: "crops", element: <Crops /> }),
-          createRoute({ path: "equipment", element: <Equipments /> }),
+createRoute({ path: "equipment", element: <Equipments /> }),
           createRoute({ path: "tasks", element: <Tasks /> }),
           createRoute({ path: "expenses", element: <Expenses /> }),
+          createRoute({ path: "labors", element: <Labors /> }),
           createRoute({ path: "weather", element: <Weather /> })
         ]
       },
