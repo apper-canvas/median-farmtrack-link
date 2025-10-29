@@ -1,10 +1,9 @@
-import React, { useContext, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/layouts/Root";
-import { useSelector } from "react-redux";
+import { useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../App';
 
 function Login() {
-  const { isInitialized } = useAuth();
+  const { isInitialized } = useContext(AuthContext);
   
   useEffect(() => {
     if (isInitialized) {
