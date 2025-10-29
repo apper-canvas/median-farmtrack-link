@@ -1,26 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import ApperIcon from '@/components/ApperIcon';
-import Modal from '@/components/molecules/Modal';
-import Error from '@/components/ui/Error';
-import Empty from '@/components/ui/Empty';
-import Loading from '@/components/ui/Loading';
-import LaborForm from '@/components/organisms/LaborForm';
-import Card from '@/components/atoms/Card';
-import Button from '@/components/atoms/Button';
-import laborService from '@/services/api/laborService';
-
-function Labors() {
-  const { selectedFarm } = useOutletContext();
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import laborService from "@/services/api/laborService";
+import farmService from "@/services/api/farmService";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Card from "@/components/atoms/Card";
+import LaborForm from "@/components/organisms/LaborForm";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import Modal from "@/components/molecules/Modal";
+function Labors({ selectedFarmId }) {
   const [labors, setLabors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [farms, setFarms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLabor, setSelectedLabor] = useState(null);
+  const [selectedFarm, setSelectedFarm] = useState(null);
 
   useEffect(() => {
-if (selectedFarm?.Id) {
+    const loadFarm = async () => {
+      if (selectedFarmId) {
+        try {
+          const farmData = await farmService.getById(selectedFarmId);
+          setSelectedFarm(farmData);
+        } catch (err) {
+          console.error('Error loading farm:', err);
+        }
+      }
+    };
+    loadFarm();
+  }, [selectedFarmId]);
+
+  useEffect(() => {
+    if (selectedFarm?.Id) {
       loadLabors();
     }
   }, [selectedFarm]);
@@ -43,7 +57,7 @@ if (selectedFarm?.Id) {
     } finally {
       setLoading(false);
     }
-  };
+};
 
   const handleAdd = () => {
     setSelectedLabor(null);
@@ -69,13 +83,12 @@ if (selectedFarm?.Id) {
       console.error('Error deleting labor:', err);
     }
   };
-
-  const handleSuccess = () => {
+const handleSuccess = () => {
     setIsModalOpen(false);
     setSelectedLabor(null);
     loadLabors();
+    toast.success(selectedLabor ? 'Labor record updated successfully' : 'Labor record created successfully');
   };
-
 if (!selectedFarm?.Id) {
     return (
       <div className="p-6">
@@ -178,7 +191,7 @@ if (!selectedFarm?.Id) {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-2">
+<div className="flex items-start gap-2">
                   <ApperIcon name="MapPin" size={16} className="text-gray-500 mt-0.5 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-gray-500">Farm</p>
@@ -233,7 +246,7 @@ if (!selectedFarm?.Id) {
         title={selectedLabor ? 'Edit Labor Record' : 'Add Labor Record'}
       >
         <LaborForm
-          farmId={selectedFarm.Id}
+          farmId={selectedFarm?.Id}
           labor={selectedLabor}
           onSuccess={handleSuccess}
           onCancel={() => {
