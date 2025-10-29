@@ -1,13 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { AuthContext } from "../../App";
+import { useAuth } from '@/layouts/Root';
 import ApperIcon from "@/components/ApperIcon";
 import FarmSelector from "@/components/molecules/FarmSelector";
 import Button from "@/components/atoms/Button";
 
 const Header = ({ selectedFarmId, onFarmChange }) => {
   const { user } = useSelector((state) => state.user);
-  const { logout } = useContext(AuthContext);
+const { logout } = useAuth();
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-30">

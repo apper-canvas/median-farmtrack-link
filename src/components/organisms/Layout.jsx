@@ -1,35 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 import Navigation from "@/components/organisms/Navigation";
 import Header from "@/components/organisms/Header";
 
 const Layout = () => {
-  const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.user);
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
-
-  const [selectedFarmId, setSelectedFarmId] = useState(() => {
-    const saved = localStorage.getItem("selectedFarmId");
-    return saved ? parseInt(saved) : null;
-  });
-
-  useEffect(() => {
-    if (selectedFarmId) {
-      localStorage.setItem("selectedFarmId", selectedFarmId.toString());
-    }
-  }, [selectedFarmId]);
-
-  // Don't render content if not authenticated
-  if (!isAuthenticated) {
-    return null;
-  }
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedFarmId, setSelectedFarmId] = useState(null);
 
   return (
     <div className="min-h-screen bg-background">
